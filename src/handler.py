@@ -30,7 +30,7 @@ def run_whisper_inference(audio_path):
     model_id = "openai/whisper-large-v3"
     torch_dtype = torch.float16
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
-    model_cache = "/cache/huggingface"
+    model_cache = "/cache/huggingface/hub"
     local_files_only = True
 
     # Load the model, tokenizer, and feature extractor

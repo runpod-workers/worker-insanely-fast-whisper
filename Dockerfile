@@ -17,6 +17,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 WORKDIR /workspace
 
+# install system package ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Install Python Dependencies
 COPY builder/requirements.txt /requirements.txt
 RUN pip install --upgrade pip && \
