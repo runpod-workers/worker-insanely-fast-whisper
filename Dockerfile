@@ -1,29 +1,39 @@
-# Base image -> https://github.com/runpod/containers/blob/main/official-templates/base/Dockerfile
-# DockerHub -> https://hub.docker.com/r/runpod/base/tags
-FROM runpod/base:0.4.0-cuda11.8.0
+# Base image
+FROM runpod/pytorch:1.13.0-py3.10-cuda11.7.1-devel
 
-# The base image comes with many system dependencies pre-installed to help you get started quickly.
-# Please refer to the base image's Dockerfile for more information before adding additional dependencies.
-# IMPORTANT: The base image overrides the default huggingface cache location.
+ARG HUGGING_FACE_HUB_WRITE_TOKEN
+ENV HUGGING_FACE_HUB_WRITE_TOKEN=$HUGGING_FACE_HUB_WRITE_TOKEN
 
+ENV HF_HOME="/cache/huggingface"
+ENV HF_DATASETS_CACHE="/cache/huggingface/datasets"
+ENV DEFAULT_HF_METRICS_CACHE="/cache/huggingface/metrics"
+ENV DEFAULT_HF_MODULES_CACHE="/cache/huggingface/modules"
 
-# --- Optional: System dependencies ---
-# COPY builder/setup.sh /setup.sh
-# RUN /bin/bash /setup.sh && \
-#     rm /setup.sh
+ENV HUGGINFACE_HUB_CACHE="/cache/huggingface/hub"
+ENV HUGGINGFACE_ASSETS_CACHE="/cache/huggingface/assets"
 
+# Use bash shell with pipefail option
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Python dependencies
+WORKDIR /workspace
+
+# Install Python Dependencies
 COPY builder/requirements.txt /requirements.txt
-RUN python3.11 -m pip install --upgrade pip && \
-    python3.11 -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
+RUN pip install --upgrade pip && \
+    pip install -r /requirements.txt && \
     rm /requirements.txt
 
-# NOTE: The base image comes with multiple Python versions pre-installed.
-#       It is reccommended to specify the version of Python when running your code.
+# Cache Models
+COPY builder/cache_model.py /cache_model.py
+RUN python /cache_model.py && \
+    rm /cache_model.py
 
-
-# Add src files (Worker Template)
+# Copy Source Code
 ADD src .
 
-CMD python3.11 -u /handler.py
+# Basic validation
+# Verify that the cache folder is not empty
+RUN test -n "$(ls -A /cache/huggingface)"
+
+
+CMD ["python", "-u", "handler.py"]
