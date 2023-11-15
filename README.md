@@ -6,7 +6,7 @@
 &nbsp;
 [![CD | Build-Test-Release](https://github.com/runpod-workers/worker-template/actions/workflows/build-test-release.yml/badge.svg)](https://github.com/runpod-workers/worker-template/actions/workflows/build-test-release.yml)
 
-🚀 | Runpod worker for Insanely-Fast-Whisper. https://github.com/Vaibhavs10/insanely-fast-whisper
+🚀 | Runpod worker for Insanely-Fast-Whisper.
 
 </div>
 
@@ -27,3 +27,8 @@ The following inputs can be used for testing the model:
   }
 }
 ```
+
+## Acknowledgments
+
+- This tool is powered by Hugging Face's ASR models, primarily Whisper by OpenAI.
+- Optimizations are developed by [Vaibhavs10/insanely-fast-whisper](https://github.com/Vaibhavs10/insanely-fast-whisper).
