@@ -25,7 +25,7 @@ def download_file(url, local_filename):
     return local_filename
 
 
-def run_whisper_inference(audio_path):
+def run_whisper_inference(audio_path, chunk_length, batch_size):
     """Run Whisper model inference on the given audio file."""
     model_id = "openai/whisper-large-v3"
     torch_dtype = torch.float16
@@ -61,8 +61,8 @@ def run_whisper_inference(audio_path):
     # Run the transcription
     outputs = pipe(
         audio_path,
-        chunk_length_s=30,
-        batch_size=24,
+        chunk_length_s=chunk_length,
+        batch_size=batch_size,
         generate_kwargs={"task": "transcribe", "language": None},
         return_timestamps=True,
     )
@@ -73,13 +73,16 @@ def run_whisper_inference(audio_path):
 def handler(job):
     job_input = job['input']
     audio_url = job_input["audio"]
+    chunk_length = job_input["chunk_length"]
+    batch_size = job_input["batch_size"]
 
     if audio_url:
         # Download the audio file
         audio_file_path = download_file(audio_url, 'downloaded_audio.wav')
 
         # Run Whisper model inference
-        result = run_whisper_inference(audio_file_path)
+        result = run_whisper_inference(
+            audio_file_path, chunk_length, batch_size)
 
         # Cleanup: Remove the downloaded file
         os.remove(audio_file_path)
