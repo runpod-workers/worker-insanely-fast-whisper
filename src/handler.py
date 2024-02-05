@@ -11,9 +11,6 @@ from transformers import (
     pipeline
 )
 
-# If your handler runs inference on a model, load the model here.
-# You will want models to be loaded into memory before starting serverless.
-
 
 def download_file(url, local_filename):
     """Helper function to download a file from a URL."""
@@ -25,14 +22,13 @@ def download_file(url, local_filename):
     return local_filename
 
 
-def run_whisper_inference(audio_path, chunk_length, batch_size):
+def run_whisper_inference(audio_path, chunk_length, batch_size, language, task):
     """Run Whisper model inference on the given audio file."""
     model_id = "openai/whisper-large-v3"
     torch_dtype = torch.float16
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     model_cache = "/cache/huggingface/hub"
     local_files_only = True
-
     # Load the model, tokenizer, and feature extractor
     model = WhisperForConditionalGeneration.from_pretrained(
         model_id,
@@ -63,7 +59,7 @@ def run_whisper_inference(audio_path, chunk_length, batch_size):
         audio_path,
         chunk_length_s=chunk_length,
         batch_size=batch_size,
-        generate_kwargs={"task": "transcribe", "language": None},
+        generate_kwargs={"task": task, "language": language},
         return_timestamps=True,
     )
 
@@ -75,6 +71,8 @@ def handler(job):
     audio_url = job_input["audio"]
     chunk_length = job_input["chunk_length"]
     batch_size = job_input["batch_size"]
+    language = job_input["language"] if "language" in job_input else None
+    task = job_input["task"] if "task" in job_input else "transcribe"
 
     if audio_url:
         # Download the audio file
@@ -82,8 +80,7 @@ def handler(job):
 
         # Run Whisper model inference
         result = run_whisper_inference(
-            audio_file_path, chunk_length, batch_size)
-
+            audio_file_path, chunk_length, batch_size, language, task)
         # Cleanup: Remove the downloaded file
         os.remove(audio_file_path)
 

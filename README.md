@@ -24,8 +24,10 @@ The following inputs can be used for testing the model:
 {
   "input": {
     "audio": "https://github.com/runpod-workers/sample-inputs/raw/main/audio/gettysburg.wav",
-    "batch_size": 24,
-    "chunk_length": 30
+    "batch_size": 24, (Number of parallel batches you want to compute. Reduce if you face OOMs. (default: 24))
+    "chunk_length": 30,
+    "task": "transcribe", (Task to perform: transcribe or translate to another language. (default: transcribe))
+    "language": None, (Language of the input audio. (default: "None" (Whisper auto-detects the language)))
   }
 }
 ```
