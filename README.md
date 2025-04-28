@@ -2,11 +2,7 @@
 
 <h1>Insanely-Fast-Whisper | Worker</h1>
 
-[![CI | Test Handler](https://github.com/runpod-workers/worker-template/actions/workflows/CI-test_handler.yml/badge.svg)](https://github.com/runpod-workers/worker-template/actions/workflows/CI-test_handler.yml)
-&nbsp;
-[![CD | Build-Test-Release](https://github.com/runpod-workers/worker-template/actions/workflows/build-test-release.yml/badge.svg)](https://github.com/runpod-workers/worker-template/actions/workflows/build-test-release.yml)
-
-🚀 | Runpod worker for Insanely-Fast-Whisper.
+🚨 deprecated, please use [worker-faster_whisper](https://github.com/runpod-workers/worker-faster_whisper) instead
 
 </div>
 
